@@ -42,6 +42,8 @@ export class QuestLogComponent {
     y: 0,
     active: false
   });
+  showModal = signal(false);
+  submittedData = signal<any>(null);
 
   // Validation States
   passwordValid = signal(false);
@@ -157,15 +159,21 @@ export class QuestLogComponent {
   finishQuest(): void {
     if (this.formValid()) {
       this.triggerRipple(event as any);
-      this.showSnackbar('🎉 QUEST COMPLETE! Welcome, adventurer!', 'success');
-      console.log('Form Data:', {
+      const questData = {
         username: this.username(),
         dateOfBirth: this.dateOfBirth(),
         class: this.selectedClass(),
         originStory: this.originStory(),
-        startingItem: this.startingItem(),
-        darkMode: this.darkMode()
-      });
+        startingItem: this.startingItem()
+      };
+      this.submittedData.set(questData);
+      this.showModal.set(true);
+      this.showSnackbar('🎉 QUEST COMPLETE! Welcome, adventurer!', 'success');
+      console.log('Form Data:', questData);
     }
+  }
+
+  closeModal(): void {
+    this.showModal.set(false);
   }
 }

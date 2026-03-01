@@ -146,4 +146,37 @@
   <div class="snackbar" [class.visible]="snackbar().visible" [class.error]="snackbar().type === 'error'">
     {{ snackbar().text }}
   </div>
+
+  <!-- Quest Complete Modal -->
+  <div class="modal-backdrop" *ngIf="showModal()" (click)="closeModal()"></div>
+  <div class="modal" [class.active]="showModal()" *ngIf="showModal()">
+    <div class="modal-header">
+      <h2 class="modal-title">🏆 QUEST COMPLETE 🏆</h2>
+    </div>
+    <div class="modal-content" *ngIf="submittedData()">
+      <div class="data-card">
+        <div class="data-label">ADVENTURER NAME</div>
+        <div class="data-value">{{ submittedData().username }}</div>
+      </div>
+      <div class="data-card">
+        <div class="data-label">DATE OF BIRTH</div>
+        <div class="data-value">{{ submittedData().dateOfBirth }}</div>
+      </div>
+      <div class="data-card">
+        <div class="data-label">CHOSEN CLASS</div>
+        <div class="data-value">{{ submittedData().class.toUpperCase() }}</div>
+      </div>
+      <div class="data-card">
+        <div class="data-label">STARTING ITEM</div>
+        <div class="data-value">{{ submittedData().startingItem }}</div>
+      </div>
+      <div class="data-card large">
+        <div class="data-label">YOUR TALE</div>
+        <div class="data-value story">{{ submittedData().originStory }}</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="close-button" (click)="closeModal()">CLOSE</button>
+    </div>
+  </div>
 </div>
