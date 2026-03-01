@@ -1,0 +1,149 @@
+<div class="quest-container" [class.dark-mode]="darkMode()">
+  <!-- Header -->
+  <div class="quest-header">
+    <h1 class="quest-title">⚔️ QUEST-LOG ⚔️</h1>
+    <p class="quest-subtitle">BEGIN YOUR ADVENTURE</p>
+  </div>
+
+  <!-- Dark Mode Toggle -->
+  <div class="toggle-container">
+    <span class="toggle-label" [class.active]="!darkMode()">DAY MAP</span>
+    <div class="slide-toggle" (click)="toggleDarkMode()">
+      <div class="toggle-switch" [style.left]="darkMode() ? '50%' : '0'"></div>
+    </div>
+    <span class="toggle-label" [class.active]="darkMode()">DEEP DUNGEON</span>
+  </div>
+
+  <!-- XP Progress Bar -->
+  <div class="xp-container">
+    <div class="xp-label">XP GAINED: {{ xpProgress() }}%</div>
+    <div class="xp-bar-outer">
+      <div class="xp-bar-inner" [style.width.%]="xpProgress()">
+        <div class="xp-bar-segment" *ngFor="let i of xpSegments()" [style.left.%]="i * 10"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Container -->
+  <form class="quest-form" (ngSubmit)="formValid() && finishQuest()">
+    <!-- Username Field -->
+    <div class="form-group">
+      <label for="username" class="form-label">👤 ACCOUNT NAME</label>
+      <input
+        type="text"
+        id="username"
+        [(ngModel)]="username"
+        name="username"
+        class="form-input"
+        placeholder="Enter your name..."
+        required
+      />
+    </div>
+
+    <!-- Password Field -->
+    <div class="form-group">
+      <label for="password" class="form-label">🔐 PASSWORD (8+ chars, alphanumeric, starts with letter)</label>
+      <input
+        type="password"
+        id="password"
+        [(ngModel)]="password"
+        name="password"
+        (input)="validatePassword(password())"
+        class="form-input"
+        [class.valid]="passwordValid()"
+        [class.invalid]="password().length > 0 && !passwordValid()"
+        placeholder="EnterPassword123..."
+        required
+      />
+      <div class="validation-hint" *ngIf="password().length > 0">
+        <span *ngIf="passwordValid()" class="hint-success">✓ Mana Restored!</span>
+        <span *ngIf="!passwordValid()" class="hint-error">✗ Requirements Not Met</span>
+      </div>
+    </div>
+
+    <!-- Date of Birth Field -->
+    <div class="form-group">
+      <label for="dob" class="form-label">🎂 DATE OF BIRTH (2006 or earlier)</label>
+      <input
+        type="date"
+        id="dob"
+        [(ngModel)]="dateOfBirth"
+        name="dateOfBirth"
+        (change)="validateDateOfBirth(dateOfBirth())"
+        class="form-input"
+        [class.valid]="dateValid()"
+        [class.invalid]="dateOfBirth().length > 0 && !dateValid()"
+        required
+      />
+      <div class="validation-hint" *ngIf="dateOfBirth().length > 0">
+        <span *ngIf="dateValid()" class="hint-success">✓ Level Unlocked!</span>
+        <span *ngIf="!dateValid()" class="hint-error">✗ Level Requirement Not Met</span>
+      </div>
+    </div>
+
+    <!-- Origin Story Field -->
+    <div class="form-group">
+      <label for="origin" class="form-label">📖 THE ORIGIN STORY</label>
+      <p class="form-description">What was the inciting incident that brought you here?</p>
+      <textarea
+        id="origin"
+        [(ngModel)]="originStory"
+        name="originStory"
+        class="form-textarea"
+        placeholder="Tell us your tale..."
+        rows="4"
+        required
+      ></textarea>
+    </div>
+
+    <!-- Class Selection Cards -->
+    <div class="form-group">
+      <label class="form-label">⚡ SELECT YOUR CLASS</label>
+      <div class="class-grid">
+        <div
+          *ngFor="let cls of classOptions"
+          class="class-card"
+          [class.selected]="selectedClass() === cls.id"
+          (click)="selectClass(cls.id)"
+        >
+          <div class="card-name">{{ cls.name }}</div>
+          <div class="card-description">{{ cls.description }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Starting Item Dropdown -->
+    <div class="form-group">
+      <label for="item" class="form-label">🎁 THE LOOT - Starting Item</label>
+      <select
+        id="item"
+        [(ngModel)]="startingItem"
+        name="startingItem"
+        class="form-select"
+      >
+        <option *ngFor="let item of itemOptions" [value]="item">{{ item }}</option>
+      </select>
+    </div>
+
+    <!-- Finish Quest Button -->
+    <button
+      type="submit"
+      class="finish-button"
+      [disabled]="!formValid()"
+      (click)="formValid() && triggerRipple($event)"
+    >
+      <span class="button-text">🎮 FINISH QUEST 🎮</span>
+      <div
+        class="ripple"
+        *ngIf="rippleEffect().active"
+        [style.left.px]="rippleEffect().x"
+        [style.top.px]="rippleEffect().y"
+      ></div>
+    </button>
+  </form>
+
+  <!-- Snackbar Notification -->
+  <div class="snackbar" [class.visible]="snackbar().visible" [class.error]="snackbar().type === 'error'">
+    {{ snackbar().text }}
+  </div>
+</div>
